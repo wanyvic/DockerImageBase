@@ -1,31 +1,8 @@
 #!/bin/bash
-while getopts ":a:c:l:k:s:" opt 
-do 
-    case $opt in 
-        a) 
-        localip=$OPTARG;
-        ;; 
-        c) 
-        name=$OPTARG;
-        ;; 
-        l) 
-        serverip=$OPTARG;
-        ;; 
-        k) 
-        key=$OPTARG; 
-        ;; 
-        s) 
-        ssh_pubkey=$OPTARG;
-        ;; 
-        ?) 
-        echo "error" 
-        exit 1;; 
-    esac 
-done
-edge -d n2n -c $name -k $key -a $localip -l $serverip
+edge -d n2n -c $N2N_NAME -k $N2N_KEY -a $N2N_LOCALIP -l $N2N_SERVERIP
 sed -i 's/^PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config 
 service ssh restart ||service sshd restart
 mkdir /root/.ssh
-echo -e $ssh_pubkey"\n" > /root/.ssh/authorized_keys
+echo -e $SSH_PUBKEY"\n" > /root/.ssh/authorized_keys
 ping localhost
 
