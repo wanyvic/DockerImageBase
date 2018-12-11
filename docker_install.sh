@@ -1,6 +1,7 @@
 #!/bin/bash
 sudo apt-get update
 sudo apt-get install -y \
+    gnupg-curl \
     apt-transport-https \
     ca-certificates \
     curl \
@@ -27,4 +28,3 @@ wget https://github.com/wanyvic/DockerImageBase/releases/download/docker-ce-16.0
 https://github.com/wanyvic/DockerImageBase/releases/download/docker-ce-16.04.1/nvidia-container-runtime_2.0.0+docker18.06.1-1_amd64.deb
 sudo dpkg -i nvidia-container-runtime-hook_1.4.0-1_amd64.deb nvidia-container-runtime_2.0.0+docker18.06.1-1_amd64.deb
 
-    
