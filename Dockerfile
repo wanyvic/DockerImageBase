@@ -25,12 +25,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/cuda.list && \
     echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
 
-ENV CUDA_VERSION 9.1.85
+ENV CUDA_VERSION 10.0.130
 
-ENV CUDA_PKG_VERSION 9-1=$CUDA_VERSION-1
+ENV CUDA_PKG_VERSION 10-0=$CUDA_VERSION-1
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        cuda-cudart-$CUDA_PKG_VERSION  ocl-icd-libopencl1 ocl-icd-opencl-dev clinfo && \
-    ln -s cuda-9.1 /usr/local/cuda && \
+        cuda-cudart-$CUDA_PKG_VERSION \
+        cuda-compat-10-0=410.48-1 ocl-icd-libopencl1 ocl-icd-opencl-dev clinfo && \
+    ln -s cuda-10.0 /usr/local/cuda && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /etc/OpenCL/vendors && \
@@ -50,7 +51,7 @@ ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
 # nvidia-container-runtime
 ENV NVIDIA_VISIBLE_DEVICES none
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
-ENV NVIDIA_REQUIRE_CUDA "cuda>=9.1"
+ENV NVIDIA_REQUIRE_CUDA "cuda>=10.0"
 
 ENV EDGE_DOWNLOAD=https://github.com/wanyvic/DockerImageBase/releases/download/n2n_moudle_edge/edge
 ENV START_SHELL=https://github.com/wanyvic/DockerImageBase/releases/download/ImageStartShell/start.sh
