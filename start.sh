@@ -3,5 +3,10 @@ sed -i 's/^PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/ssh
 service ssh restart ||service sshd restart
 mkdir /root/.ssh
 echo -e $SSH_PUBKEY"\n" > /root/.ssh/authorized_keys
-edge -d n2n -c $N2N_NAME -r -a $N2N_SERVERIP -s $N2N_NETMASK -l $N2N_SNIP -f > /var/log/edge.log
+if [ ! -n "$N2N_NETMASK" ]; then
+N2NNETMASK=''
+else
+N2NNETMASK="-s $N2N_NETMASK"
+fi
+edge -d n2n -c $N2N_NAME -r -a $N2N_SERVERIP $N2NNETMASK -l $N2N_SNIP -f > /var/log/edge.log
 
