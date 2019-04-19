@@ -47,3 +47,4 @@ ETH)
     echo "Other command!"  
     ;;
 esac
+ping localhost
