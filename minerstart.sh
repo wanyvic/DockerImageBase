@@ -6,7 +6,7 @@
 case $MINER_TYPE in
 MGD)
     echo "miner type: mgd"
-    MINER_PATH="/root/MassGridMiner_0.2.1_Ubuntu_docker/bfgminer"
+    MINER_PATH="/root/MassGridMiner_0.2.1_Ubuntu/bfgminer"
     export TERMINFO=/usr/share/terminfo
     export TERM=xterm-basic
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MINER_PATH/.libs/
