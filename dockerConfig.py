@@ -393,6 +393,4 @@ sudo python nvidia.py -load
 
 # 重启 docker
 sudo python nvidia.py -start
-
--join "SWMTKN-1-0uau6cvrqjv90wx0ka4h5g04bqwe0t0lmy25secg8i81rg15uj-dcoko0h4rlfdnkw9kd5z7vsn4 49.234.37.252:2377"
 '''
