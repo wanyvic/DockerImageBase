@@ -86,7 +86,7 @@ def checkAndEdit(gpuname=""):
         print strs
             
 # 重启docker
-def startDocker():
+def startDocker(jointoken):
     cmds="sudo systemctl daemon-reload"
     status=execCmd("reload",cmds,args.test)
     if status == 0:
@@ -100,6 +100,14 @@ def startDocker():
         print("restart docker.service succeful!")
     else:
         print("failed!",status)
+    
+    if jointoken is not None and jointoken != "":
+        cmds = "sudo docker swarm leave -f"
+        status = execCmd("join swarm",cmds,args.test)
+        print("join leave",status)
+        cmds = "sudo docker swarm join --token %s" %(jointoken)
+        status = execCmd("join swarm",cmds,args.test)
+        print("join swarm ",status)
         
 def setDockerPM():
     cmds ="sudo nvidia-smi -pm 1"
@@ -292,6 +300,7 @@ if __name__ =='__main__':
     parser.add_argument('-dev',"--device",nargs="?",default="/dev/sda4",type=str,help="[-device] get device name")
     parser.add_argument('-miner',"--getminer",nargs="?",default="",type=str,help="[-miner] miner type")
     parser.add_argument('-addr',"--address",nargs="?",default="",type=str,help="[-address] miner address")
+    parser.add_argument('-join',"--jointoken",nargs="?",default="",type=str,help="[-address] miner address")
     parser.add_argument('-revenue',"--revenue",nargs="?",default="",type=str,help="[-miner] revenue address")
 
     parser.add_argument('-start',"--start",action="store_true",default=False,help="[-start] restart service")
@@ -316,9 +325,10 @@ if __name__ =='__main__':
     if args.load == True:
         getCurrDaemonJson()
 
+    jointoken = args.jointoken
     # restart docker
     if args.start == True:
-        startDocker()
+        startDocker(jointoken)
 
     # get local ip
     if args.ipaddr ==True:
@@ -356,7 +366,7 @@ if __name__ =='__main__':
         # write to file
         if args.ptofile == True:
             writetofile("/etc/docker/","daemon.json",result,args.silent)
-            startDocker()
+            startDocker(jointoken)
         else:
             print(result)
     if len(sys.argv)<2:
@@ -369,7 +379,9 @@ sudo vim /etc/nvidia-container-runtime/config.toml
 
 '''
 # 初始化配置
-sudo python nvidia.py -all -pf -miner "eth" -addr "MTzzXdhT3NDyfFLUL42bVYeewYpt8JSqAm"  -revenue "MTzzXdhT3NDyfFLUL42bVYeewYpt8JSqAm" -dev "sda4"
+sudo python nvidia.py -all -pf -miner "eth" -addr "MTzzXdhT3NDyfFLUL42bVYeewYpt8JSqAm"  -revenue "MTzzXdhT3NDyfFLUL42bVYeewYpt8JSqAm" -dev "sda4" \
+-join "SWMTKN-1-0uau6cvrqjv90wx0ka4h5g04bqwe0t0lmy25secg8i81rg15uj-dcoko0h4rlfdnkw9kd5z7vsn4 49.234.37.252:2377"
+
 -all 获取所有数据(gpu ,mem,cpu)
 -pf 强制写入文件
 
@@ -381,4 +393,6 @@ sudo python nvidia.py -load
 
 # 重启 docker
 sudo python nvidia.py -start
+
+-join "SWMTKN-1-0uau6cvrqjv90wx0ka4h5g04bqwe0t0lmy25secg8i81rg15uj-dcoko0h4rlfdnkw9kd5z7vsn4 49.234.37.252:2377"
 '''
