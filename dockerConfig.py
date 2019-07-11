@@ -97,10 +97,17 @@ def startDocker():
     cmds = "sudo systemctl restart docker.service"
     status=execCmd("restart",cmds,args.test)
     if status ==0:
-        print("restart docker.service succeeful!")
+        print("restart docker.service succeful!")
     else:
         print("failed!",status)
-
+        
+def setDockerPM():
+    cmds ="sudo nvidia-smi -pm 1"
+    status=execCmd("set nvidia-smi -pm 1",cmds,args.test)
+    if status ==0:
+        print("reset nvidia-smi -pm 1 succeful")
+    else:
+        print("failed!",status)
 def getAddress():
     address="mjxR2WQragrPfvhwCLyyUj5FHCb1ULP8DL"
     # addr=raw_input("input your MGD wallet address as revenue:")
@@ -250,9 +257,9 @@ def getMiner(minertype,address,log=False):
         print(minerlist)
     return minerlist
 
-def getModel(tmplist,gpulist,cpulist,memlist,minerlist,device_name):
+def getModel(tmplist,gpulist,cpulist,memlist,minerlist,device_name,revenue_ddr):
     localip="localip="+getIp()
-    ipaddress="address="+getAddress()
+    ipaddress="address="+revenue_ddr
     nfsip="nfsip="+getDataHost()
     label_list=[localip,ipaddress,nfsip]
     for k in cpulist:label_list.append(k)
@@ -285,6 +292,8 @@ if __name__ =='__main__':
     parser.add_argument('-dev',"--device",nargs="?",default="/dev/sda4",type=str,help="[-device] get device name")
     parser.add_argument('-miner',"--getminer",nargs="?",default="",type=str,help="[-miner] miner type")
     parser.add_argument('-addr',"--address",nargs="?",default="",type=str,help="[-address] miner address")
+    parser.add_argument('-revenue',"--revenue",nargs="?",default="",type=str,help="[-miner] revenue address")
+
     parser.add_argument('-start',"--start",action="store_true",default=False,help="[-start] restart service")
     parser.add_argument('-toml',"--toml",action="store_true",default=False,help="[-start] check and edit the toml")
     parser.add_argument('-all',"--getall",action="store_true",default=False,help="[-all] get all of gpu,cpu,mem infomation")
@@ -338,7 +347,10 @@ if __name__ =='__main__':
         memlist=getMem(args.logprint)
         minerlist=getMiner(args.getminer,args.address,args.logprint)
         device_name = args.device
-        dockerjson=getModel(tmplist,gpulist,cpulist,memlist,minerlist,device_name)
+        revenue_ddr = args.revenue
+        dockerjson=getModel(tmplist,gpulist,cpulist,memlist,minerlist,device_name,revenue_ddr)
+        
+        setDockerPM()
         # template= json.loads(dockerjson)
         result = json.dumps(dockerjson,sort_keys=True,indent=4)
         # write to file
@@ -357,8 +369,8 @@ sudo vim /etc/nvidia-container-runtime/config.toml
 
 '''
 # 初始化配置
-sudo python nvidia.py -all -pf -miner "eth" -addr "MTzzXdhT3NDyfFLUL42bVYeewYpt8JSqAm" -dev "sda4"
--all 获取所有数据
+sudo python nvidia.py -all -pf -miner "eth" -addr "MTzzXdhT3NDyfFLUL42bVYeewYpt8JSqAm"  -revenue "MTzzXdhT3NDyfFLUL42bVYeewYpt8JSqAm" -dev "sda4"
+-all 获取所有数据(gpu ,mem,cpu)
 -pf 强制写入文件
 
 # 查看当前 daemon.json 内容
@@ -369,3 +381,4 @@ sudo python nvidia.py -load
 
 # 重启 docker
 sudo python nvidia.py -start
+'''
