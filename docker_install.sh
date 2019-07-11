@@ -27,4 +27,4 @@ sudo pkill -SIGHUP dockerd
 wget https://github.com/wanyvic/DockerImageBase/releases/download/docker-ce-16.04.1/nvidia-container-runtime-hook_1.4.0-1_amd64.deb \
 https://github.com/wanyvic/DockerImageBase/releases/download/docker-ce-16.04.1/nvidia-container-runtime_2.0.0+docker18.06.1-1_amd64.deb
 sudo dpkg -i nvidia-container-runtime-hook_1.4.0-1_amd64.deb nvidia-container-runtime_2.0.0+docker18.06.1-1_amd64.deb
-
+sudo docker info
