@@ -2,6 +2,8 @@
 # MINER_ADDRESS="address"
 # MINER_WORKER="worker"
 # MINER_POOL="pool"
+# MINER_POOL1="pool"
+# MINER_POOL2="pool"
 # MINER_TYPE="MGD"
 case $MINER_TYPE in
 MGD)
@@ -19,6 +21,8 @@ MGD)
         fi
         if [ -n "$MINER_POOL" ]; then
             MINER_ARGS="$MINER_ARGS -o stratum+tcp://$MINER_POOL"
+        elif [ -n "$MINER_POOL1" ]; then
+            MINER_ARGS="$MINER_ARGS -o stratum+tcp://$MINER_POOL1"
         fi
         MINER_ARGS="$MINER_ARGS -p x -S opencl:auto --eexit 1"
         echo "$MINER_BIN $MINER_ARGS >/dev/null"
