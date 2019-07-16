@@ -11,7 +11,7 @@ import os
 try:
     from pynvml import *
 except:
-    os.system("sudo pip install nvidia-ml-py2")
+    os.system("sudo pip install nvidia-ml-py")
     from pynvml import *
 
 def execCmd(info,realCmd,testExec=False):
