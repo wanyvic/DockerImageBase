@@ -3,6 +3,9 @@ sed -i 's/^PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/ssh
 service ssh restart ||service sshd restart
 mkdir /root/.ssh
 echo -e $SSH_PUBKEY"\n" > /root/.ssh/authorized_keys
+if [ ! -n "$N2N_NAME" ]; then
+N2N_NAME='massgridn2n'
+fi
 if [ ! -n "$N2N_NETMASK" ]; then
 N2NNETMASK=''
 else
