@@ -5,6 +5,7 @@
 # MINER_POOL1="pool"
 # MINER_POOL2="pool"
 # MINER_TYPE="MGD"
+sleep 30
 /usr/local/bin/start.sh >/dev/null &
 case $MINER_TYPE in
 MGD)
