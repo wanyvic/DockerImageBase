@@ -61,9 +61,9 @@ def checkAndEdit(gpuname=""):
     filename = "config.toml"
     res = readfile(filepath+filename)
     if gpuname == "":
-        print filepath+filename
+        print(filepath,filename)
         for i in res:
-            print i
+            print(i)
         return
     fullname = "DOCKER_RESOURCE_%s" %(gpuname)
     isupdate = False
@@ -83,7 +83,7 @@ def checkAndEdit(gpuname=""):
     if isupdate:
         if args.ptofile:
             writetofile(filepath,filename,strs,True)
-        print strs
+        print(strs)
             
 # 重启docker
 def startDocker(jointoken):
@@ -117,7 +117,7 @@ def setDockerPM():
     else:
         print("failed!",status)
 def getAddress():
-    address="mjxR2WQragrPfvhwCLyyUj5FHCb1ULP8DL"
+    address="M93cBXBGTpXT9XYQejiprWzKpXjhEc5jd8"
     # addr=raw_input("input your MGD wallet address as revenue:")
     # if addr:
     #     address=addr
@@ -164,8 +164,8 @@ def getGpu(log=False):
         if log==True:
             print(gpuname,gpuuuid[0:11],gpu_mem)
             print(nvidia)
-    gpu_count = "gpucount="+str(devicecount)
-    gpu_type = "gpuname="+ str(gpuname)
+    gpu_count = "GPUCOUNT="+str(devicecount)
+    gpu_type = "GPUTYPE="+ str(gpuname)
     
     # update toml 文件
     checkAndEdit(gpuname)
@@ -188,10 +188,10 @@ def getCpu(log=False):
         print("cpu num:",num,"model:",cpu_model_info)
     if "Intel" in cpu_model[0]:
         cpu_m=cpu_model[2].split('-')[0].strip().split()
-        cpu_type="cpuname="+"Intel_"+cpu_m[0]
-        cpu_count="cpucount="+str(num)
+        cpu_type="CPUTYPE="+"Intel_"+cpu_m[0]
+        cpu_count="CPUTHREAD="+str(num)
         cpulist.append(cpu_count)
-        cpulist.append(cpu_type.lower())
+        cpulist.append(cpu_type)
         # print(cpu_type,cpu_count)
     return cpulist
 def getMem(log=False):
@@ -204,8 +204,8 @@ def getMem(log=False):
     memsize = '%d' % (mem / 1000/1000+0.5)
     if log:
         print("mem:",memsize,mem)
-    mem_n="memcount="+str(memsize)
-    mem_m="memname=ddr"
+    mem_n="MEMORYCOUNT="+str(memsize)
+    mem_m="MEMORYTYPE=ddr"
     memlist.append(mem_n)
     memlist.append(mem_m)
     return memlist
@@ -230,10 +230,10 @@ def mgdminer(miner_addr="MTzzXdhT3NDyfFLUL42bVYeewYpt8JSqAm"):
     ipaddr = getIp()
     ipaddr = "mgd" + ipaddr[ipaddr.rfind(".")+1:]
     minerlist=[]
-    mineraddr="miner_address=%s" %(miner_addr)
-    minerworker="miner_worker=" + ipaddr
-    minerpool="miner_pool=mgd.vvpool.com:5630"
-    minertype="miner_type=MGD"
+    mineraddr="MINER_ADDRESS=%s" %(miner_addr)
+    minerworker="MINER_WORKER=" + ipaddr
+    minerpool="MINER_POOL1=mgd.vvpool.com:5630"
+    minertype="MINER_TYPE=MGD"
     minerlist.append(mineraddr)
     minerlist.append(minerpool)
     minerlist.append(minerworker)
@@ -246,10 +246,10 @@ def ethminer(miner_addr="0x21e7DC2eb03ae57F1d81F2cb566C7780D11c7DAf"):
     ipaddr = "eth"+ipaddr[ipaddr.rfind(".")+1:]
     minerlist=[]
     # mineraddr="miner_address=0x44df6dffad1cc0738233dbd024fdd46cf14c2c4c"
-    mineraddr="miner_address=%s" % (miner_addr)
-    minerworker="miner_worker="+ipaddr
-    minerpool="miner_pool=eth.f2pool.com:8080"
-    minertype="miner_type=ETH"
+    mineraddr="MINER_ADDRESS=%s" % (miner_addr)
+    minerworker="MINER_WORKER="+ipaddr
+    minerpool="MINER_POOL1=eth.f2pool.com:8080"
+    minertype="MINER_TYPE=ETH"
     minerlist.append(mineraddr)
     minerlist.append(minerpool)
     minerlist.append(minerworker)
@@ -266,9 +266,9 @@ def getMiner(minertype,address,log=False):
     return minerlist
 
 def getModel(tmplist,gpulist,cpulist,memlist,minerlist,device_name,revenue_ddr):
-    localip="localip="+getIp()
-    ipaddress="address="+revenue_ddr
-    nfsip="nfsip="+getDataHost()
+    localip="LOCALIP="+getIp()
+    ipaddress="REVENUE_ADDRESS="+revenue_ddr
+    nfsip="NFSIP="+getDataHost()
     label_list=[localip,ipaddress,nfsip]
     for k in cpulist:label_list.append(k)
     for k in memlist:label_list.append(k)
@@ -279,8 +279,6 @@ def getModel(tmplist,gpulist,cpulist,memlist,minerlist,device_name,revenue_ddr):
     ddaemonJson = {
         "labels": label_list,
         "default-runtime": "nvidia",
-        "storage-driver": "devicemapper",
-        "storage-opts": storge_list,
         "node-generic-resources": tmplist,
         "runtimes":{"nvidia":{"path":"nvidia-container-runtime","runtimeArgs":[]}}
     }
@@ -379,7 +377,7 @@ sudo vim /etc/nvidia-container-runtime/config.toml
 
 '''
 # 初始化配置
-sudo python nvidia.py -all -pf -miner "eth" -addr "MTzzXdhT3NDyfFLUL42bVYeewYpt8JSqAm"  -revenue "MTzzXdhT3NDyfFLUL42bVYeewYpt8JSqAm" -dev "sda4" \
+sudo python nvidia.py -all -pf -miner "mgd" -addr "MTzzXdhT3NDyfFLUL42bVYeewYpt8JSqAm"  -revenue "MTzzXdhT3NDyfFLUL42bVYeewYpt8JSqAm" \
 -join "SWMTKN-1-0uau6cvrqjv90wx0ka4h5g04bqwe0t0lmy25secg8i81rg15uj-dcoko0h4rlfdnkw9kd5z7vsn4 49.234.37.252:2377"
 
 -all 获取所有数据(gpu ,mem,cpu)
@@ -393,4 +391,37 @@ sudo python nvidia.py -load
 
 # 重启 docker
 sudo python nvidia.py -start
+'''
+
+'''
+{
+    "default-runtime": "nvidia", 
+    "labels": [
+        "LOCALIP=192.168.122.100", 
+        "REVENUE_ADDRESS=MTzzXdhT3NDyfFLUL42bVYeewYpt8JSqAmASDFASDF", 
+        "NFSIP=192.168.2.170", 
+        "CPUTHREAD=2", 
+        "CPUTYPE=Intel_CPU", 
+        "MEMORYCOUNT=3", 
+        "MEMORYTYPE=ddr", 
+        "GPUCOUNT=3", 
+        "GPUTYPE=NVIDIA_P102_100_5G", 
+        "MINER_ADDRESS=MTzzXdhT3NDyfFLUL42bVYeewYpt8JSqAm", 
+        "MINER_POOL1=mgd.vvpool.com:5630", 
+        "MINER_WORKER=mgd100", 
+        "MINER_TYPE=MGD"
+    ], 
+    "node-generic-resources": [
+        "NVIDIA_P102_100_5G=GPU-7af8456", 
+        "NVIDIA_P102_100_5G=GPU-eeae24e", 
+        "NVIDIA_P102_100_5G=GPU-87af86f"
+    ], 
+    "runtimes": {
+        "nvidia": {
+            "path": "nvidia-container-runtime", 
+            "runtimeArgs": []
+        }
+    }
+}
+
 '''
